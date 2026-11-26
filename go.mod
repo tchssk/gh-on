@@ -4,6 +4,7 @@ go 1.27.3
 
 require (
 	github.com/cli/go-gh/v2 v2.17.0
+	github.com/gofrs/flock v0.13.2
 	github.com/spf13/cobra v1.10.2
 	github.com/stretchr/testify v1.12.1
 	go.yaml.in/yaml/v4 v4.0.0
