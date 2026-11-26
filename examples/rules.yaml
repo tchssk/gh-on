@@ -1,0 +1,25 @@
+# gh-on rules. Copy to ~/.config/gh/gh-on/rules.yaml.
+#
+# When a notification matches a rule, gh-on runs the rule's query and passes
+# the targets that have not been handled yet to the command as "$@".
+#
+# The command may read pull requests and issues written by other people.
+# Restrict rules to owners or repositories you trust.
+rules:
+  # Review pull requests when a review is requested from you.
+  - name: pr-review
+    type: [PullRequest]
+    reason: [review_requested]
+    owner: [my-org]
+    query: is:pr is:open user-review-requested:@me org:my-org
+    # Run again when the head changes.
+    key: url+head
+    command: for url in "$@"; do claude -p --permission-mode plan "Review $url"; done
+
+  # Plan issues assigned to you.
+  - name: issue-plan
+    type: [Issue]
+    reason: [assign]
+    owner: [my-org]
+    query: is:issue is:open assignee:@me org:my-org
+    command: claude -p --permission-mode plan "Plan the work for these issues $*"
