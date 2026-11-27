@@ -1,0 +1,29 @@
+# gh-on
+
+A [GitHub CLI](https://cli.github.com/) extension that runs a command when a GitHub notification matches a rule.
+
+## Installation
+
+```sh
+gh extension install tchssk/gh-on
+```
+
+## Usage
+
+Write rules to `~/.config/gh/gh-on/rules.yaml`. See [examples/rules.yaml](examples/rules.yaml).
+
+```sh
+# Show what would run
+gh on run --dry-run --all
+
+# Check notifications once and run the commands of matching rules
+gh on run
+```
+
+To run it every minute, use launchd or cron. See [examples](examples).
+
+## Security
+
+The commands may read pull requests and issues written by other people. If a command runs an AI agent, that content can carry a prompt injection. Restrict rules to owners or repositories you trust, and do not give the commands more permissions than they need.
+
+gh-on itself does not write to GitHub.
