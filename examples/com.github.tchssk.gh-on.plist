@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  Runs "gh on run" every minute on macOS.
+
+  Replace YOU with your user name, adjust the paths, and load it:
+
+    cp com.github.tchssk.gh-on.plist ~/Library/LaunchAgents/
+    launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/com.github.tchssk.gh-on.plist
+
+  To stop it:
+
+    launchctl bootout gui/$(id -u)/com.github.tchssk.gh-on
+-->
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>com.github.tchssk.gh-on</string>
+  <key>ProgramArguments</key>
+  <array>
+    <string>/opt/homebrew/bin/gh</string>
+    <string>on</string>
+    <string>run</string>
+  </array>
+  <!-- launchd starts with a minimal PATH; the rules' commands need theirs. -->
+  <key>EnvironmentVariables</key>
+  <dict>
+    <key>PATH</key>
+    <string>/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin</string>
+  </dict>
+  <key>StartInterval</key>
+  <integer>60</integer>
+  <key>RunAtLoad</key>
+  <true/>
+  <key>StandardOutPath</key>
+  <string>/Users/YOU/Library/Logs/gh-on.log</string>
+  <key>StandardErrorPath</key>
+  <string>/Users/YOU/Library/Logs/gh-on.log</string>
+</dict>
+</plist>

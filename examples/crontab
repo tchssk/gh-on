@@ -1,0 +1,7 @@
+# Runs "gh on run" every minute with cron.
+#
+# Adjust the paths and add these lines with "crontab -e".
+# cron starts with a minimal PATH; the rules' commands need theirs.
+# If gh keeps its token in a keyring that cron cannot reach, set GH_TOKEN.
+PATH=/usr/local/bin:/usr/bin:/bin
+* * * * * gh on run >> "$HOME/.local/state/gh-on.log" 2>&1
