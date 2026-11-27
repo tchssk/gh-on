@@ -19,7 +19,6 @@ func TestParse(t *testing.T) {
 		require.NoError(t, err)
 		require.Len(t, c.Rules, 2)
 		assert.Equal(t, KeyURLHead, c.Rules[0].Key)
-		assert.Empty(t, c.Rules[0].SkipIfExists)
 		assert.Equal(t, KeyURL, c.Rules[1].Key)
 	})
 

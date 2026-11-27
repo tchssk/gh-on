@@ -51,8 +51,6 @@ type Rule struct {
 	Command string `yaml:"command"`
 	// Dir is the working directory of the command. Defaults to the home directory.
 	Dir string `yaml:"dir"`
-	// SkipIfExists defers the rule to a later run while this path exists.
-	SkipIfExists string `yaml:"skip_if_exists"`
 	// Timeout stops the command when it runs longer, e.g. 30m. Zero means no limit.
 	Timeout time.Duration `yaml:"timeout"`
 }
@@ -137,7 +135,6 @@ func (r *Rule) normalize() error {
 		errs = append(errs, fmt.Errorf("timeout %s must not be negative", r.Timeout))
 	}
 	r.Dir = expandHome(r.Dir)
-	r.SkipIfExists = expandHome(r.SkipIfExists)
 	return errors.Join(errs...)
 }
 

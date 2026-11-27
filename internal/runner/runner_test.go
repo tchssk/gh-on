@@ -5,7 +5,6 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"os"
 	"path/filepath"
 	"testing"
 	"time"
@@ -234,23 +233,6 @@ func TestRunner(t *testing.T) {
 		gh.notify(11)
 		require.NoError(t, rn.Run(ctx))
 		assert.Len(t, l.calls, 2)
-	})
-
-	t.Run("skip if exists", func(t *testing.T) {
-		rn, gh, l := newRunner(t)
-		busy := filepath.Join(t.TempDir(), ".lock")
-		require.NoError(t, os.Mkdir(busy, 0o755))
-		rn.Config.Rules[0].SkipIfExists = busy
-
-		require.NoError(t, rn.Run(ctx))
-		assert.Empty(t, l.calls)
-		assert.Zero(t, gh.searches)
-		assert.True(t, saved(t, rn).Rules["pr"].Pending)
-
-		// Checked again even when notifications are not modified.
-		require.NoError(t, os.Remove(busy))
-		require.NoError(t, rn.Run(ctx))
-		assert.Len(t, l.calls, 1)
 	})
 
 	t.Run("search error", func(t *testing.T) {

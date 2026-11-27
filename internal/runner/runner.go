@@ -6,7 +6,6 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"os"
 	"strings"
 	"time"
 
@@ -110,13 +109,6 @@ func (rn *Runner) markPending(ns []github.Notification) {
 
 func (rn *Runner) process(ctx context.Context, r *config.Rule) error {
 	rs := rn.State.Rule(r.Name)
-	if r.SkipIfExists != "" {
-		if _, err := os.Stat(r.SkipIfExists); err == nil {
-			rn.logf("%s: skipped while %s exists", r.Name, r.SkipIfExists)
-			return nil // stay pending
-		}
-	}
-
 	targets, err := rn.findTargets(r)
 	if err != nil {
 		return err // stay pending
