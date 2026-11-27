@@ -26,6 +26,7 @@ func RootCmd() *cobra.Command {
 	root.SetVersionTemplate("gh on version {{.Version}}\n")
 
 	root.AddCommand(RunCmd())
+	root.AddCommand(StatusCmd())
 
 	return root
 }
