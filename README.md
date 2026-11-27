@@ -2,6 +2,8 @@
 
 A [GitHub CLI](https://cli.github.com/) extension that runs a command when a GitHub notification matches a rule.
 
+It runs on macOS, Linux and FreeBSD. Windows is not supported.
+
 ## Installation
 
 ```sh
