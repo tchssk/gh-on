@@ -17,7 +17,11 @@ jobs:
       - uses: actions/checkout@v7.0.1
         with:
           persist-credentials: false
+      - id: version
+        run: echo "version=${GITHUB_REF_NAME#v}" >> "$GITHUB_OUTPUT"
       - uses: cli/gh-extension-precompile@v2.2.0
         with:
           generate_attestations: true
           go_version_file: go.mod
+          go_build_options: >-
+            -ldflags=-X=github.com/tchssk/gh-on/cmd.Version=${{ steps.version.outputs.version }}
