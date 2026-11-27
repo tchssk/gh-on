@@ -318,6 +318,18 @@ func TestShell(t *testing.T) {
 
 		assert.Error(t, s.Launch(context.Background(), r, nil))
 	})
+
+	t.Run("timeout stops the command and its children", func(t *testing.T) {
+		s := &Shell{Stdout: &bytes.Buffer{}, Stderr: &bytes.Buffer{}}
+		// sleep runs as a child of sh and keeps the output pipe open.
+		r := &config.Rule{Command: "sleep 30; echo done", Dir: t.TempDir(), Timeout: 100 * time.Millisecond}
+		start := time.Now()
+
+		err := s.Launch(context.Background(), r, nil)
+
+		assert.EqualError(t, err, "timed out after 100ms")
+		assert.Less(t, time.Since(start), 5*time.Second)
+	})
 }
 
 func keys(m map[string]time.Time) []string {
