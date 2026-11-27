@@ -14,7 +14,19 @@ rules:
     query: is:pr is:open user-review-requested:@me org:my-org
     # Run again when the head changes.
     key: url+head
-    command: for url in "$@"; do claude -p --permission-mode plan "Review $url"; done
+    # gh-on records the targets as handled only when the command exits 0.
+    # claude -p exits 0 even when the review fails, so check the result and
+    # exit 1 on failure. All the targets are passed again on the next
+    # notification, so skip the ones already reviewed.
+    command: |
+      reviewed=~/.local/state/reviewed.txt
+      for url in "$@"; do
+        head=$(gh pr view "$url" --json headRefOid -q .headRefOid) || exit 1
+        grep -qxF "$url@$head" "$reviewed" 2>/dev/null && continue
+        claude -p --permission-mode plan "Review $url. Print REVIEWED on the last line when the review is complete." |
+          tail -n 1 | grep -qx REVIEWED || exit 1
+        echo "$url@$head" >> "$reviewed"
+      done
     # Stop the command if it runs longer than this.
     timeout: 1h
 
