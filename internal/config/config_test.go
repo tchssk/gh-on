@@ -3,6 +3,7 @@ package config
 import (
 	"os"
 	"testing"
+	"time"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -34,6 +35,17 @@ rules:
 		require.NoError(t, err)
 		assert.Equal(t, KeyURL, c.Rules[0].Key)
 		assert.Equal(t, []string{"o/r"}, c.Rules[0].Repo)
+		assert.Zero(t, c.Rules[0].Timeout)
+	})
+
+	t.Run("timeout", func(t *testing.T) {
+		c, err := Parse([]byte(`
+rules:
+  - {name: a, owner: [o], query: q, command: "true", timeout: 30m}
+`))
+
+		require.NoError(t, err)
+		assert.Equal(t, 30*time.Minute, c.Rules[0].Timeout)
 	})
 
 	t.Run("negated repo with org", func(t *testing.T) {
@@ -71,6 +83,12 @@ rules:
 		"unknown field": `
 rules:
   - {name: a, owner: [o], query: q, command: "true", comand: x}`,
+		"negative timeout": `
+rules:
+  - {name: a, owner: [o], query: q, command: "true", timeout: -1m}`,
+		"invalid timeout": `
+rules:
+  - {name: a, owner: [o], query: q, command: "true", timeout: soon}`,
 		"no rules": `rules: []`,
 	} {
 		t.Run(name, func(t *testing.T) {

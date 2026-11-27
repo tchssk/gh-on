@@ -9,6 +9,7 @@ import (
 	"path/filepath"
 	"slices"
 	"strings"
+	"time"
 
 	ghconfig "github.com/cli/go-gh/v2/pkg/config"
 	"go.yaml.in/yaml/v4"
@@ -52,6 +53,8 @@ type Rule struct {
 	Dir string `yaml:"dir"`
 	// SkipIfExists defers the rule to a later run while this path exists.
 	SkipIfExists string `yaml:"skip_if_exists"`
+	// Timeout stops the command when it runs longer, e.g. 30m. Zero means no limit.
+	Timeout time.Duration `yaml:"timeout"`
 }
 
 // Load reads and validates the rules file.
@@ -129,6 +132,9 @@ func (r *Rule) normalize() error {
 	}
 	if strings.TrimSpace(r.Command) == "" {
 		errs = append(errs, errors.New("command is required"))
+	}
+	if r.Timeout < 0 {
+		errs = append(errs, fmt.Errorf("timeout %s must not be negative", r.Timeout))
 	}
 	r.Dir = expandHome(r.Dir)
 	r.SkipIfExists = expandHome(r.SkipIfExists)
