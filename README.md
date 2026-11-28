@@ -12,7 +12,7 @@ gh extension install tchssk/gh-on
 
 ## Usage
 
-Write rules to `~/.config/gh/gh-on/rules.yaml`. See [examples/rules.yaml](examples/rules.yaml).
+Write rules to `~/.config/gh/gh-on/rules.yaml`. See [examples/rules.yaml](examples/rules.yaml). For the values of `reason`, see [Notification reasons](https://docs.github.com/en/rest/activity/notifications#about-notification-reasons). gh-on only reads the notifications you are participating in, so reasons such as `subscribed` never match.
 
 ```sh
 # Show what would run
